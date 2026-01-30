@@ -1,0 +1,19 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "PRMIS_projekat.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "..\\Meteoroloska_Stanica\\Meteoroloska_Stanica.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "..\\Merni_uredjaj\\Merni_uredjaj.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

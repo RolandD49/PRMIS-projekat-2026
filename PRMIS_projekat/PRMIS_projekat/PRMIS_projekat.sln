@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35527.113
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PRMIS_projekat", "PRMIS_projekat.csproj", "{ED1BEE70-F623-486F-BDCB-54085142F772}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Meteoroloska_Stanica", "..\Meteoroloska_Stanica\Meteoroloska_Stanica.csproj", "{35FC65B3-036D-42BE-AAE7-613AE1D2F457}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "..\Common\Common.csproj", "{7B3AF5F3-45CA-460A-9878-E0E3DDC2CB55}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Merni_uredjaj", "..\Merni_uredjaj\Merni_uredjaj.csproj", "{353B194B-2C03-4084-A59E-C87BD5A4E390}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ED1BEE70-F623-486F-BDCB-54085142F772}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ED1BEE70-F623-486F-BDCB-54085142F772}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ED1BEE70-F623-486F-BDCB-54085142F772}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ED1BEE70-F623-486F-BDCB-54085142F772}.Release|Any CPU.Build.0 = Release|Any CPU
+		{35FC65B3-036D-42BE-AAE7-613AE1D2F457}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35FC65B3-036D-42BE-AAE7-613AE1D2F457}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35FC65B3-036D-42BE-AAE7-613AE1D2F457}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35FC65B3-036D-42BE-AAE7-613AE1D2F457}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7B3AF5F3-45CA-460A-9878-E0E3DDC2CB55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B3AF5F3-45CA-460A-9878-E0E3DDC2CB55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B3AF5F3-45CA-460A-9878-E0E3DDC2CB55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B3AF5F3-45CA-460A-9878-E0E3DDC2CB55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{353B194B-2C03-4084-A59E-C87BD5A4E390}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{353B194B-2C03-4084-A59E-C87BD5A4E390}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{353B194B-2C03-4084-A59E-C87BD5A4E390}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{353B194B-2C03-4084-A59E-C87BD5A4E390}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
