@@ -3,14 +3,14 @@
   "WorkspaceRootPath": "C:\\Users\\TUF\\Desktop\\PRMIS-projekat-2026-main\\PRMIS_projekat\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{ED1BEE70-F623-486F-BDCB-54085142F772}|PRMIS_projekat.csproj|c:\\users\\tuf\\desktop\\prmis-projekat-2026-main\\prmis_projekat\\centralni_server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{35FC65B3-036D-42BE-AAE7-613AE1D2F457}|..\\Meteoroloska_Stanica\\Meteoroloska_Stanica.csproj|c:\\users\\tuf\\desktop\\prmis-projekat-2026-main\\meteoroloska_stanica\\meteoroloska_stanica.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{ED1BEE70-F623-486F-BDCB-54085142F772}|PRMIS_projekat.csproj|C:\\Users\\TUF\\Desktop\\PRMIS-projekat-2026-main\\PRMIS_projekat\\centralni_server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{ED1BEE70-F623-486F-BDCB-54085142F772}|PRMIS_projekat.csproj|solutionrelative:centralni_server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{353B194B-2C03-4084-A59E-C87BD5A4E390}|..\\Merni_uredjaj\\Merni_uredjaj.csproj|c:\\users\\tuf\\desktop\\prmis-projekat-2026-main\\merni_uredjaj\\merni_uredjaj.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{35FC65B3-036D-42BE-AAE7-613AE1D2F457}|..\\Meteoroloska_Stanica\\Meteoroloska_Stanica.csproj|c:\\users\\tuf\\desktop\\prmis-projekat-2026-main\\meteoroloska_stanica\\meteoroloska_stanica.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7B3AF5F3-45CA-460A-9878-E0E3DDC2CB55}|..\\Common\\Common.csproj|c:\\users\\tuf\\desktop\\prmis-projekat-2026-main\\common\\merenje.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
@@ -50,17 +50,17 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 8,
+          "SelectedChildIndex": 6,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "Merni_uredjaj.cs",
               "DocumentMoniker": "C:\\Users\\TUF\\Desktop\\PRMIS-projekat-2026-main\\PRMIS_projekat\\Merni_uredjaj\\Merni_uredjaj.cs",
               "RelativeDocumentMoniker": "Merni_uredjaj\\Merni_uredjaj.cs",
               "ToolTip": "C:\\Users\\TUF\\Desktop\\PRMIS-projekat-2026-main\\PRMIS_projekat\\Merni_uredjaj\\Merni_uredjaj.cs",
               "RelativeToolTip": "Merni_uredjaj\\Merni_uredjaj.cs",
-              "ViewState": "AgIAAF4AAAAAAAAAAAAQwEYAAAAvAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-01-27T19:48:56.404Z"
             },
@@ -126,15 +126,16 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "Meteoroloska_Stanica.cs",
-              "DocumentMoniker": "C:\\Users\\TUF\\Desktop\\PRMIS-projekat-2026-main\\PRMIS_projekat\\Meteoroloska_Stanica\\Meteoroloska_Stanica.cs",
-              "RelativeDocumentMoniker": "Meteoroloska_Stanica\\Meteoroloska_Stanica.cs",
-              "ToolTip": "C:\\Users\\TUF\\Desktop\\PRMIS-projekat-2026-main\\PRMIS_projekat\\Meteoroloska_Stanica\\Meteoroloska_Stanica.cs",
-              "RelativeToolTip": "Meteoroloska_Stanica\\Meteoroloska_Stanica.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAgwK0AAAAtAAAAAAAAAA==",
+              "DocumentMoniker": "C:\\Users\\TUF\\Desktop\\PRMIS-projekat-2026-main\\Meteoroloska_Stanica\\Meteoroloska_Stanica.cs",
+              "RelativeDocumentMoniker": "..\\Meteoroloska_Stanica\\Meteoroloska_Stanica.cs",
+              "ToolTip": "C:\\Users\\TUF\\Desktop\\PRMIS-projekat-2026-main\\Meteoroloska_Stanica\\Meteoroloska_Stanica.cs",
+              "RelativeToolTip": "..\\Meteoroloska_Stanica\\Meteoroloska_Stanica.cs",
+              "ViewState": "AgIAAHcAAAAAAAAAAAAYwKAAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-25T19:50:51.227Z"
+              "WhenOpened": "2026-01-25T19:50:51.227Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -150,16 +151,15 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "Centralni_Server.cs",
               "DocumentMoniker": "C:\\Users\\TUF\\Desktop\\PRMIS-projekat-2026-main\\PRMIS_projekat\\Centralni_Server.cs",
               "RelativeDocumentMoniker": "Centralni_Server.cs",
-              "ToolTip": "C:\\Users\\TUF\\Desktop\\PRMIS-projekat-2026-main\\PRMIS_projekat\\Centralni_Server.cs*",
-              "RelativeToolTip": "Centralni_Server.cs*",
-              "ViewState": "AgIAABEAAAAAAAAAAAAAwGgAAAANAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\TUF\\Desktop\\PRMIS-projekat-2026-main\\PRMIS_projekat\\Centralni_Server.cs",
+              "RelativeToolTip": "Centralni_Server.cs",
+              "ViewState": "AgIAABcAAAAAAAAAAAAkwCAAAAAQAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-02-03T16:27:06.48Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-02-03T16:27:06.48Z"
             },
             {
               "$type": "Document",

@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Meteoroloska_Stanica
@@ -15,168 +16,147 @@ namespace Meteoroloska_Stanica
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Meteoroloska Stanica pocinje sa radom.");
-            Socket clientSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            Stanica ova_st = new Stanica();
-            int br_soketa = 0; //prvi soket za UDP komunikaciju sa mernim uredjajima, dobija se od servera
-            List<Socket> udp_sockets = new List<Socket>(); //lista gde ce biti smesteni UDP soketi za merne uredjaje
-            List<IPEndPoint> udp_endpoints = new List<IPEndPoint>();
-            List<Socket> checkRead = new List<Socket>();
-            List<Socket> checkError = new List<Socket>();
-            List<Merenje> merenja = new List<Merenje>();
+            Console.WriteLine("=== METEOROLOSKA STANICA (KLIJENT) ===");
 
-            IPEndPoint serverEP = new IPEndPoint(IPAddress.Loopback, 50001);
-            byte[] buffer = new byte[1024];
+            Socket merniSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            Socket alarmniSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-            Console.WriteLine("Klijent je spreman za povezivanje sa serverom, kliknite enter");
-            Console.ReadKey();
-            clientSocket.Connect(serverEP);
-            Console.WriteLine("Klijent je uspesno povezan sa serverom!");
+            Stanica ova_st = null;
+            int br_soketa_start = 0;
+            List<Socket> udp_sockets = new List<Socket>();
+            List<Merenje> merenjaZaSlanje = new List<Merenje>();
 
-            //TCP komunikacija sa Centralnim serverom: inicijalizacija Meteoroloske stanice
             try
             {
-                // Primamo podatke od servera
-                int brBajta = clientSocket.Receive(buffer);
-
-                if (brBajta == 0)
+                // RETRY LOGIKA: Pokusava povezivanje dok god server ne odgovori
+                bool povezan = false;
+                while (!povezan)
                 {
-                    Console.WriteLine("Centralni server je zatvorio vezu.");
-                    return;
+                    try
+                    {
+                        Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] Pokusavam povezivanje na Server (50001 i 50002)...");
+
+                        // Pokusaj povezivanja na oba porta
+                        merniSocket.Connect(new IPEndPoint(IPAddress.Loopback, 50001));
+                        alarmniSocket.Connect(new IPEndPoint(IPAddress.Loopback, 50002));
+
+                        povezan = true;
+                        Console.ForegroundColor = ConsoleColor.Green;
+                        Console.WriteLine("Uspesno povezana oba TCP kanala!");
+                        Console.ResetColor();
+                    }
+                    catch (SocketException)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.WriteLine("Server nije spreman (verovatno jos unosite podatke). Ponovni pokusaj za 2 sekunde...");
+                        Console.ResetColor();
+                        Thread.Sleep(2000); // Pauza pre sledeceg pokusaja
+                    }
                 }
 
-                // Ključno: Koristimo jedan MemoryStream za oba objekta (Stanica + Port)
-                // jer ih je server poslao jedan za drugim
-                using (MemoryStream ms = new MemoryStream(buffer, 0, brBajta))
+                // PRIMANJE INICIJALIZACIJE (Nakon sto se uspesno poveze)
+                byte[] initBuffer = new byte[4096];
+                int bytesRead = merniSocket.Receive(initBuffer);
+
+                using (MemoryStream ms = new MemoryStream(initBuffer, 0, bytesRead))
                 {
                     BinaryFormatter bf = new BinaryFormatter();
-
-                    // 1. Deserijalizujemo objekat Stanica
                     ova_st = (Stanica)bf.Deserialize(ms);
-                    Console.WriteLine($"\n--- Inicijalizacija ---");
-                    Console.WriteLine($"Naziv stanice: {ova_st.Naziv}");
-                    Console.WriteLine($"Koordinate: {ova_st.Sirina}, {ova_st.Duzina}");
-                    Console.WriteLine($"Broj mernih uredjaja: {ova_st.Br_mernih_uredjaja}");
-
-                    // 2. Deserijalizujemo string za port (koji je server poslao bf.Serialize(ms, br_porta))
-                    // Napomena: U prethodnom koraku smo na serveru dodali bf.Serialize za port
                     string portRaw = (string)bf.Deserialize(ms);
-                    br_soketa = int.Parse(portRaw);
+                    br_soketa_start = int.Parse(portRaw);
+                }
 
-                    Console.WriteLine($"Dostupni portovi za UDP: {br_soketa} do {br_soketa + ova_st.Br_mernih_uredjaja - 1}");
-                    Console.WriteLine("-----------------------\n");
+                Console.WriteLine($"\n--- STANICA INICIJALIZOVANA ---");
+                Console.WriteLine($"Naziv: {ova_st.Naziv}");
+                Console.WriteLine($"UDP portovi za uredjaje: {br_soketa_start} do {br_soketa_start + ova_st.Br_mernih_uredjaja - 1}");
+
+                // OTVARANJE UDP SOKETA ZA MERNE UREDJAJE
+                for (int i = 0; i < ova_st.Br_mernih_uredjaja; i++)
+                {
+                    Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
+                    s.Bind(new IPEndPoint(IPAddress.Any, br_soketa_start + i));
+                    udp_sockets.Add(s);
+                }
+
+                Console.WriteLine("\nSlusam mjerne uredjaje na UDP portovima...");
+                EndPoint remoteEP = new IPEndPoint(IPAddress.Any, 0);
+                byte[] udpBuffer = new byte[2048];
+
+                while (true)
+                {
+                    List<Socket> checkRead = new List<Socket>(udp_sockets);
+                    if (checkRead.Count > 0)
+                    {
+                        // Socket.Select prati da li je nesto stiglo na UDP portove
+                        Socket.Select(checkRead, null, null, 100000);
+
+                        foreach (Socket s in checkRead)
+                        {
+                            int bytesRec = s.ReceiveFrom(udpBuffer, ref remoteEP);
+                            using (MemoryStream ms = new MemoryStream(udpBuffer, 0, bytesRec))
+                            {
+                                BinaryFormatter bf = new BinaryFormatter();
+                                object obj = bf.Deserialize(ms);
+
+                                if (obj is Merenje m)
+                                {
+                                    m.NazivStanice = ova_st.Naziv;
+                                    merenjaZaSlanje.Add(m);
+                                    Console.WriteLine($"[UDP] Stiglo merenje: {m.Tip} = {m.Trenutna_vrednost}");
+                                }
+                                else if (obj is Alarm al)
+                                {
+                                    al.Uzrok = $"[{ova_st.Naziv}] {al.Uzrok}";
+                                    Console.ForegroundColor = ConsoleColor.Red;
+                                    Console.WriteLine($"[!!!] ALARM DETEKTOVAN! Saljem na poseban TCP kanal (Port 50002)...");
+                                    Console.ResetColor();
+
+                                    using (MemoryStream msA = new MemoryStream())
+                                    {
+                                        bf.Serialize(msA, al);
+                                        alarmniSocket.Send(msA.ToArray());
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // PERIODICNO SLANJE MERENJA NA SERVER (Port 50001)
+                    if (merenjaZaSlanje.Count > 0)
+                    {
+                        try
+                        {
+                            using (MemoryStream msM = new MemoryStream())
+                            {
+                                new BinaryFormatter().Serialize(msM, merenjaZaSlanje);
+                                merniSocket.Send(msM.ToArray());
+                                merenjaZaSlanje.Clear();
+                            }
+                        }
+                        catch
+                        {
+                            Console.WriteLine("Greska pri slanju merenja na server.");
+                        }
+                    }
+
+                    if (Console.KeyAvailable && Console.ReadKey(true).Key == ConsoleKey.Escape) break;
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Doslo je do greske tokom inicijalizacije:\n{ex.Message}");
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("\nKRITICNA GRESKA U RADU STANICE:");
+                Console.WriteLine(ex.Message);
+                Console.ResetColor();
+                Console.WriteLine("\nPritisnite bilo koji taster za izlaz...");
+                Console.ReadKey();
             }
-            //UDP komunikacija
-
-            //postavljanje UDP soketa za merne uredjaje
-            for (int i = 0; i < (ova_st.Br_mernih_uredjaja); i++)
+            finally
             {
-                Socket s = new Socket(AddressFamily.InterNetwork, SocketType.Dgram, ProtocolType.Udp);
-                IPEndPoint udp_ep = new IPEndPoint(IPAddress.Any, br_soketa + i);
-                s.Bind(udp_ep);
-                udp_sockets.Add(s);
-                udp_endpoints.Add(udp_ep);
+                merniSocket.Close();
+                alarmniSocket.Close();
+                foreach (var s in udp_sockets) s.Close();
             }
-
-            EndPoint posiljaocEP = new IPEndPoint(IPAddress.Any, 0);
-            byte[] prijemniBafer = new byte[1024];
-
-            try
-            {
-                Console.WriteLine("Meteoroloska stanica je pokrenut! Za zavrsetak rada pritisnite Escape");
-                while (true)
-                {
-                    foreach (Socket s in udp_sockets)
-                    {
-                        checkRead.Add(s);
-                        checkError.Add(s);
-                    }
-                    Socket.Select(checkRead, null, checkError, 1000);
-
-                    if (checkRead.Count > 0)
-                    {
-                        foreach (Socket s in checkRead)
-                        {
-                            try
-                            {
-                                int bytesRec = s.ReceiveFrom(prijemniBafer, ref posiljaocEP);
-                                using (MemoryStream ms = new MemoryStream(prijemniBafer, 0, bytesRec))
-                                {
-                                    BinaryFormatter bf = new BinaryFormatter();
-                                    object obj = bf.Deserialize(ms);
-
-                                    if (obj is Merenje mer)
-                                    {
-                                        mer.NazivStanice = ova_st.Naziv; 
-                                        merenja.Add(mer);
-                                        Console.WriteLine($"Merenje primljeno: {mer.Tip} {mer.Trenutna_vrednost}");
-                                    }
-                                    else if (obj is Alarm al)
-                                    {
-                                        al.Uzrok = $"[{ova_st.Naziv}] {al.Uzrok}"; 
-                                        Console.WriteLine("DETEKTOVAN ALARM! Prosledjujem serveru...");
-                                        using (MemoryStream msA = new MemoryStream())
-                                        {
-                                            bf.Serialize(msA, al);
-                                            clientSocket.Send(msA.ToArray());
-                                        }
-                                    }
-                                }
-                            }
-                            catch (Exception ex) { Console.WriteLine(ex.Message); }
-                        }
-
-                        // Slanje agregiranih merenja
-                        if (merenja.Count > 0)
-                        {
-                            using (MemoryStream ms = new MemoryStream())
-                            {
-                                new BinaryFormatter().Serialize(ms, merenja);
-                                clientSocket.Send(ms.ToArray());
-                                merenja.Clear(); // Obavezno prazni listu!
-                            }
-                        }
-                    }
-                    if (checkError.Count > 0)
-                    {
-                        Console.WriteLine($"Desilo se {checkError.Count} gresaka\n");
-
-                        foreach (Socket s in checkError)
-                        {
-                            Console.WriteLine($"Greska na socketu: {s.LocalEndPoint}");
-
-                            Console.WriteLine("Zatvaram socket zbog greske...");
-                            s.Close();
-
-                        }
-                    }
-
-
-                    //merenja.Clear();
-
-                    checkError.Clear();
-                    checkRead.Clear();
-                }
-
-            }
-            catch (SocketException ex)
-            {
-                Console.WriteLine($"Doslo je do greske: {ex}");
-            }
-
-
-            Console.WriteLine("Stanica zavrsava sa radom");
-            foreach (Socket s in udp_sockets)
-            {
-                s.Close();
-            }
-            Console.ReadKey();
-
         }
     }
 }

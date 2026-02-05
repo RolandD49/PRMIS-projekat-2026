@@ -3,11 +3,11 @@
     "Name": "New Profile",
     "Projects": [
       {
-        "Path": "PRMIS_projekat.csproj",
+        "Path": "..\\Meteoroloska_Stanica\\Meteoroloska_Stanica.csproj",
         "Action": "Start"
       },
       {
-        "Path": "..\\Meteoroloska_Stanica\\Meteoroloska_Stanica.csproj",
+        "Path": "PRMIS_projekat.csproj",
         "Action": "Start"
       },
       {
